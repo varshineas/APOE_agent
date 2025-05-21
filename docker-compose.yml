@@ -6,7 +6,7 @@ services:
       context: .
     container_name: apoe-agent
     ports:
-      - "8888:8000"   # <== This is the port your UI will be on
+      - "8000:8000"   # <== This is the port your UI will be on
     env_file:
       - .env          # <== API key here (not committed)
     volumes:
