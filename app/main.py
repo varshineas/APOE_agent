@@ -6,12 +6,12 @@ from agent import query_agent
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
-def serve_ui(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "response": ""})
+def serve_form(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/", response_class=HTMLResponse)
 async def get_response(request: Request, user_input: str = Form(...)):
