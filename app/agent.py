@@ -1,6 +1,5 @@
 from loader import load_pubmed_by_query
 from embedder import embed
-from vector_store import store
 from llm import generate
 
 store = VectorStore(dim=768)  # depending on your embedding size

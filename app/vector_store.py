@@ -2,7 +2,7 @@ import faiss
 import numpy as np
 
 class VectorStore:
-    def __init__(self, dim):
+    def __init__(self, dim=768):
         self.index = faiss.IndexFlatL2(dim)
         self.texts = []
 
