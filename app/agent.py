@@ -1,8 +1,8 @@
 from loader import load_pubmed_by_query
 from embedder import embed
 from vector_store import add, search, init_qdrant
-from pubmed_utils import search_pubmed
-from paper_cache import is_pmid_loaded
+from pubmed_utils import search_pubmed, fetch_best_available 
+from paper_cache import is_pmid_loaded, mark_loaded
 from llm import generate
 
 init_qdrant()
