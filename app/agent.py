@@ -25,7 +25,7 @@ def load_and_embed_pubmed(query: str, max_results=10):
             else:
                 print(f"Empty or invalid content for PMID {pmid}")
         else:
-            print(f"⏩ Skipping already loaded PMID: {pmid}")
+            print(f"Skipping already loaded PMID: {pmid}")
 
     print(f"📥 Found {len(new_texts)} new papers to embed")
 
@@ -42,7 +42,7 @@ def query_agent(user_query: str):
     qvec = embed([user_query]).cpu().detach().numpy()
     docs = search(qvec, k=2)  # Adjust k as needed
 
-    print("\n🔍 Retrieved documents from Qdrant:")
+    print("\nRetrieved documents from Qdrant:")
     for i, doc in enumerate(docs, 1):
         print(f"\n--- Chunk {i} ---\n{doc[:500]}")
 

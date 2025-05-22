@@ -37,15 +37,23 @@ def chunk_text(text: str, max_len: int = CHUNK_SIZE):
 def add(vectors, texts, ids):
     points = []
     for text, vector, pmid in zip(texts, vectors, ids):
-        vector = np.array(vector, dtype=np.float32)  # Ensure correct dtype
+        vector = np.array(vector, dtype=np.float32)
         chunks = chunk_text(text)
+        print(f"📄 PMID {pmid}: {len(chunks)} chunks")
+
         for chunk in chunks:
             points.append(PointStruct(
                 id=str(uuid4()),
-                vector=vector.tolist(),
+                vector=vector.tolist(), 
                 payload={"text": chunk, "pmid": pmid}
             ))
-    client.upsert(collection_name=COLLECTION_NAME, points=points)
+
+    print(f"Total points to insert: {len(points)}")
+    if points:
+        client.upsert(collection_name=COLLECTION_NAME, points=points)
+    else:
+        print("No valid points found to insert.")
+
 
 def search(vector, k=3):
     vector = np.array(vector, dtype=np.float32).flatten().tolist()  # Ensure float32 and flat list
