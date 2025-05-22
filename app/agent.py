@@ -40,13 +40,19 @@ def load_and_embed_pubmed(query: str, max_results=10):
 
 def query_agent(user_query: str):
     qvec = embed([user_query]).cpu().detach().numpy()
-    docs = search(qvec, k=3)  # not 5 or 10 — keep it tight
+    docs = search(qvec, k=3)  # top 3 chunks
 
-    # Concatenate retrieved texts
-    context = "\n\n".join(docs)
-    prompt = f"Based on the following documents:\n\n{context}\n\nAnswer the question:\n{user_query}"
+    context = "\n\n".join([doc[:400] for doc in docs])  # truncate long chunks
 
-    # DEBUG: print prompt length
-    print(f"Prompt size: {len(prompt)} chars")
-    
+    prompt = (
+        f"You are a biomedical assistant. Use the following research excerpts to answer:\n\n"
+        f"{context}\n\n"
+        f"Question: {user_query}\n"
+        f"Answer concisely and only using the above information."
+    )
+
+    print("Prompt sent to LLaMA:")
+    print(prompt[:1000])  # log a safe portion
+
     return generate(prompt)
+
