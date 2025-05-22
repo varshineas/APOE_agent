@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APOE Agent</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Ask the APOE Agent</h1>
+        <h1>🧬 Ask the <span class="highlight">APOEcalipse</span></h1>
         <form method="post">
-            <textarea name="user_input" rows="4" placeholder="Ask a question about APOE...">{{ user_input or '' }}</textarea>
-            <button type="submit">Submit</button>
+            <textarea name="user_input" rows="5" placeholder="Ask a question about APOE...">{{ user_input or '' }}</textarea>
+            <button type="submit">🧠 Ask</button>
         </form>
 
         {% if response %}
