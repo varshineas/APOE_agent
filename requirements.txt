@@ -1,7 +1,6 @@
 fastapi
 uvicorn
 sentence-transformers
-faiss-cpu  # or use qdrant-client if using Qdrant
 PyMuPDF
 langchain
 transformers
@@ -9,3 +8,4 @@ torch
 openai
 biopython
 python-multipart
+qdrant-client
