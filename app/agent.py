@@ -40,6 +40,13 @@ def load_and_embed_pubmed(query: str, max_results=10):
 
 def query_agent(user_query: str):
     qvec = embed([user_query]).cpu().detach().numpy()
-    docs = search(qvec, k=5)
-    prompt = f"Based on the following documents:\n\n{docs}\n\nAnswer the question:\n{user_query}"
+    docs = search(qvec, k=3)  # not 5 or 10 — keep it tight
+
+    # Concatenate retrieved texts
+    context = "\n\n".join(docs)
+    prompt = f"Based on the following documents:\n\n{context}\n\nAnswer the question:\n{user_query}"
+
+    # DEBUG: print prompt length
+    print(f"Prompt size: {len(prompt)} chars")
+    
     return generate(prompt)
