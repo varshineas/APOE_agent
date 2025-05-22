@@ -5,7 +5,7 @@ PyMuPDF
 langchain
 transformers
 torch
-openai
+openai>=1.0.0
 biopython
 python-multipart
 qdrant-client
