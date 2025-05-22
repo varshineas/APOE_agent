@@ -1,19 +1,28 @@
-version: '3.8'
-
 services:
   apoe-agent:
     build:
       context: .
     container_name: apoe-agent
     ports:
-      - "7000:7000"   # <== This is the port your UI will be on
+      - "7000:7000"
     env_file:
-      - .env          # <== API key here (not committed)
+      - .env
     volumes:
       - ./app:/app
+    depends_on:
+      - qdrant
+      - llama
 
   qdrant:
     image: qdrant/qdrant
     container_name: qdrant
     ports:
       - "6333:6333"
+
+  llama:
+    build:
+      context: .
+      dockerfile: Dockerfile.llama
+    container_name: llama
+    ports:
+      - "8001:8001"

@@ -1,11 +1,9 @@
 fastapi
 uvicorn
 sentence-transformers
-PyMuPDF
-langchain
-transformers
-torch
-openai>=1.0.0
 biopython
-python-multipart
 qdrant-client
+python-multipart
+requests
+torch
+accelerate
