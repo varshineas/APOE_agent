@@ -1,47 +1,54 @@
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
-import uuid
-import numpy as np
+from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+from uuid import uuid4
+import os
 
-COLLECTION_NAME = "apoe-papers"
+QDRANT_HOST = os.getenv("QDRANT_HOST", "qdrant")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
+COLLECTION_NAME = "apoe_chunks"
+CHUNK_SIZE = 500  # max ~500 characters per chunk
 
-client = QdrantClient(host="qdrant", port=6333)
+client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 
-# Initialize collection if not exists
-def init_qdrant(dim=768):
-    if not client.collection_exists(COLLECTION_NAME):
-        client.create_collection(
+def init_qdrant():
+    if COLLECTION_NAME not in [c.name for c in client.get_collections().collections]:
+        client.recreate_collection(
             collection_name=COLLECTION_NAME,
-            vectors_config=VectorParams(size=dim, distance=Distance.COSINE)
+            vectors_config=VectorParams(size=768, distance=Distance.COSINE)
         )
 
-def add(vectors, texts, pmids):
-    points = [
-        PointStruct(
-            id=str(uuid.uuid4()),
-            vector=vec.tolist(),
-            payload={"text": text, "pmid": pmid}
-        )
-        for vec, text, pmid in zip(vectors, texts, pmids)
-    ]
+init_qdrant()
+
+def chunk_text(text: str, max_len: int = CHUNK_SIZE):
+    sentences = text.split('. ')
+    chunks = []
+    current = ""
+    for sentence in sentences:
+        if len(current) + len(sentence) < max_len:
+            current += sentence + '. '
+        else:
+            chunks.append(current.strip())
+            current = sentence + '. '
+    if current:
+        chunks.append(current.strip())
+    return chunks
+
+def add(vectors, texts, ids):
+    points = []
+    for text, vector, pmid in zip(texts, vectors, ids):
+        chunks = chunk_text(text)
+        for chunk in chunks:
+            points.append(PointStruct(
+                id=str(uuid4()),
+                vector=vector.tolist(),  # re-use same embedding for now
+                payload={"text": chunk, "pmid": pmid}
+            ))
     client.upsert(collection_name=COLLECTION_NAME, points=points)
 
-def search(query_vector, k=5):
+def search(vector, k=3):
     hits = client.search(
         collection_name=COLLECTION_NAME,
-        query_vector=query_vector[0].tolist(),
+        query_vector=vector.tolist(),
         limit=k
     )
     return [hit.payload["text"] for hit in hits]
-
-def is_pmid_loaded(pmid):
-    result = client.scroll(
-        collection_name=COLLECTION_NAME,
-        limit=1,
-        filter=Filter(
-            must=[
-                FieldCondition(key="pmid", match=MatchValue(value=pmid))
-            ]
-        )
-    )
-    return len(result[0]) > 0
