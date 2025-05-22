@@ -40,9 +40,13 @@ def load_and_embed_pubmed(query: str, max_results=10):
 
 def query_agent(user_query: str):
     qvec = embed([user_query]).cpu().detach().numpy()
-    docs = search(qvec, k=2)  # Only grab top 2 chunks
+    docs = search(qvec, k=2)  # Adjust k as needed
 
-    context = "\n\n".join([doc[:400] for doc in docs])  # truncate each doc
+    print("\n🔍 Retrieved documents from Qdrant:")
+    for i, doc in enumerate(docs, 1):
+        print(f"\n--- Chunk {i} ---\n{doc[:500]}")
+
+    context = "\n\n".join([doc[:400] for doc in docs])
 
     prompt = (
         f"You are a biomedical assistant. Use the following scientific excerpts to answer the question.\n\n"
@@ -51,7 +55,7 @@ def query_agent(user_query: str):
         f"Answer:"
     )
 
-    print("Prompt sent to LLaMA:")
-    print(prompt[:1000])  # truncate to preview
+    print("\n🧠 Final prompt to LLaMA:\n" + prompt[:1000])
     return generate(prompt)
+
 
