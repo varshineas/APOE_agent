@@ -9,6 +9,14 @@
 <body>
     <div class="container">
         <h1>🧬 Ask the <span class="highlight">APOEcalypse</span></h1>
+        <p>This site is a prototype of the APOEcalypse Agent — an AI-powered research assistant focused on the APOE gene. It pulls information from scientific literature (PubMed Central), processes it with a lightweight AI model, and provides responses grounded in biological context. The goal is to build a modular system where each component specializes in different data types: structure, transcriptomics, genomics, and more.</p>
+        <p>Future updates will integrate:</p>
+        <ul>
+            <li>Protein structure prediction (AlphaFold, ESMFold)</li>
+            <li>Multi-omics reasoning via multiple AI agents</li>
+            <li>A supervisory agent to synthesize insights across tools and datasets</li>
+        </ul>
+        <p>This platform aims to streamline hypothesis generation and bridge experimental and computational research for APOE.</p>
         <form method="post">
             <textarea name="user_input" rows="5" placeholder="Ask a question about APOE...">{{ user_input or '' }}</textarea>
             <button type="submit">🧠 Ask</button>
